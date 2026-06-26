@@ -123,6 +123,111 @@ class ClienteController extends Controller
     }
 
     /**
+     * Show the form for editing the specified client.
+     */
+    public function edit($id)
+    {
+        $tenantId = auth()->user()->tenant_id;
+        $cliente = Cliente::where('tenant_id', $tenantId)->findOrFail($id);
+
+        return view('clientes.edit', compact('cliente'));
+    }
+
+    /**
+     * Update the specified client in database.
+     */
+    public function update(Request $request, $id)
+    {
+        $tenantId = auth()->user()->tenant_id;
+        $cliente = Cliente::where('tenant_id', $tenantId)->findOrFail($id);
+
+        // Validation rules
+        $request->validate([
+            'tipo_cliente' => ['required', 'in:PF,PJ'],
+            'documento' => [
+                'required',
+                'string',
+                'max:25',
+                function ($attribute, $value, $fail) use ($request, $tenantId, $id) {
+                    $cleanDoc = preg_replace('/\D/', '', $value);
+                    
+                    // Validate digits
+                    if ($request->tipo_cliente === 'PF') {
+                        if (!$this->validateCpf($cleanDoc)) {
+                            $fail('O CPF informado é inválido.');
+                            return;
+                        }
+                    } else {
+                        if (!$this->validateCnpj($cleanDoc)) {
+                            $fail('O CNPJ informado é inválido.');
+                            return;
+                        }
+                    }
+
+                    // Validate uniqueness for the current tenant excluding self
+                    $exists = Cliente::where('tenant_id', $tenantId)
+                        ->where('documento', $value)
+                        ->where('id', '!=', $id)
+                        ->exists();
+                    if ($exists) {
+                        $fail(($request->tipo_cliente === 'PF' ? 'Este CPF' : 'Este CNPJ') . ' já está cadastrado no sistema.');
+                    }
+                }
+            ],
+            'nome' => ['required', 'string', 'max:255'],
+            'apelido' => ['nullable', 'string', 'max:255'],
+            'registro_geral' => ['nullable', 'string', 'max:255'],
+            'tipo_contribuinte' => ['required', 'string', 'in:contribuinte_icms,não_contribuinte,isento'],
+            'telefone_fixo' => ['nullable', 'string', 'max:25'],
+            'telefone_celular' => ['nullable', 'string', 'max:25'],
+            'email' => ['required', 'email', 'max:255'],
+            'cep' => ['required', 'string', 'max:9'],
+            'logradouro' => ['required', 'string', 'max:255'],
+            'numero' => ['required', 'string', 'max:15'],
+            'bairro' => ['nullable', 'string', 'max:255'],
+            'complemento' => ['nullable', 'string', 'max:255'],
+            'cidade' => ['nullable', 'string', 'max:255'],
+            'uf' => ['nullable', 'string', 'max:2'],
+            'ibge' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        $cliente->update([
+            'tipo_cliente' => $request->tipo_cliente,
+            'documento' => $request->documento,
+            'nome' => $request->nome,
+            'apelido' => $request->apelido,
+            'registro_geral' => $request->registro_geral,
+            'tipo_contribuinte' => $request->tipo_contribuinte,
+            'consumidor_final' => $request->has('consumidor_final'),
+            'telefone_fixo' => $request->telefone_fixo,
+            'telefone_celular' => $request->telefone_celular,
+            'email' => $request->email,
+            'cep' => $request->cep,
+            'logradouro' => $request->logradouro,
+            'numero' => $request->numero,
+            'bairro' => $request->bairro,
+            'complemento' => $request->complemento,
+            'cidade' => $request->cidade,
+            'uf' => $request->uf,
+            'ibge' => $request->ibge,
+        ]);
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente atualizado com sucesso!');
+    }
+
+    /**
+     * Remove the specified client from database.
+     */
+    public function destroy($id)
+    {
+        $tenantId = auth()->user()->tenant_id;
+        $cliente = Cliente::where('tenant_id', $tenantId)->findOrFail($id);
+        $cliente->delete();
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente excluído com sucesso!');
+    }
+
+    /**
      * Validate CPF digits.
      */
     private function validateCpf($cpf)

@@ -84,13 +84,36 @@
                     <span>Fornecedores</span>
                 </a>
 
-                <!-- Subitem: Auxiliares -->
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition-colors group">
-                    <svg class="h-4 w-4 text-slate-600 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                    </svg>
-                    <span>Auxiliares</span>
-                </a>
+                <!-- Subitem: Auxiliares (Menu colapsável) -->
+                <details class="group/aux select-none" {{ request()->routeIs('categorias.*') || request()->routeIs('unidades.*') ? 'open' : '' }}>
+                    <summary class="flex items-center justify-between px-3 py-2 hover:bg-slate-800/40 hover:text-white rounded-lg text-xs font-medium transition-all cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                        <div class="flex items-center space-x-3">
+                            <svg class="h-4 w-4 transition-colors {{ request()->routeIs('categorias.*') || request()->routeIs('unidades.*') ? 'text-indigo-400' : 'text-slate-600 group-hover:text-indigo-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                            </svg>
+                            <span class="{{ request()->routeIs('categorias.*') || request()->routeIs('unidades.*') ? 'text-white font-semibold' : 'text-slate-400' }}">Auxiliares</span>
+                        </div>
+                        <!-- Chevron indicator icon -->
+                        <svg class="h-3 w-3 text-slate-500 group-open/aux:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </summary>
+
+                    <!-- Submenu items for Auxiliares with custom indentation -->
+                    <div class="mt-1 pl-4 ml-4 border-l border-slate-800 space-y-1">
+                        <!-- Subitem: Categorias -->
+                        <a href="{{ route('categorias.index') }}" class="flex items-center space-x-2 px-3 py-1.5 rounded-md text-[11px] font-medium transition-colors group/sub {{ request()->routeIs('categorias.index') ? 'text-white bg-slate-800/60 font-semibold' : 'text-slate-400 hover:text-white hover:bg-slate-800/40' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('categorias.index') ? 'bg-indigo-400' : 'bg-slate-600 group-hover/sub:bg-indigo-400' }} transition-colors"></span>
+                            <span>Categorias</span>
+                        </a>
+
+                        <!-- Subitem: Unidades -->
+                        <a href="{{ route('unidades.index') }}" class="flex items-center space-x-2 px-3 py-1.5 rounded-md text-[11px] font-medium transition-colors group/sub {{ request()->routeIs('unidades.index') ? 'text-white bg-slate-800/60 font-semibold' : 'text-slate-400 hover:text-white hover:bg-slate-800/40' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('unidades.index') ? 'bg-indigo-400' : 'bg-slate-600 group-hover/sub:bg-indigo-400' }} transition-colors"></span>
+                            <span>Unidades</span>
+                        </a>
+                    </div>
+                </details>
 
                 <!-- Subitem: Produto -->
                 <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition-colors group">
