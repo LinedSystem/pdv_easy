@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('verified')->group(function () {
         Route::resource('clientes', App\Http\Controllers\ClienteController::class)->except(['show']);
         Route::resource('fornecedores', App\Http\Controllers\FornecedorController::class)->except(['show']);
+        Route::resource('produtos', App\Http\Controllers\ProdutoController::class)->except(['show']);
 
         // Auxiliares - Categorias & Unidades
         Route::resource('categorias', App\Http\Controllers\CategoriaController::class)->except(['create', 'show']);

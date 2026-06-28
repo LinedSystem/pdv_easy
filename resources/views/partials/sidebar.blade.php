@@ -115,9 +115,9 @@
                     </div>
                 </details>
 
-                <!-- Subitem: Produto -->
-                <a href="#" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/40 transition-colors group">
-                    <svg class="h-4 w-4 text-slate-600 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <!-- Subitem: Produtos -->
+                <a href="{{ route('produtos.index') }}" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors group {{ request()->routeIs('produtos.*') ? 'text-white bg-slate-800/60 font-semibold' : 'text-slate-400 hover:text-white hover:bg-slate-800/40' }}">
+                    <svg class="h-4 w-4 transition-colors {{ request()->routeIs('produtos.*') ? 'text-indigo-400' : 'text-slate-600 group-hover:text-indigo-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                     <span>Produtos</span>
